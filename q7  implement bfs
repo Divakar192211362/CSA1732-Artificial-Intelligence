@@ -1,0 +1,42 @@
+from collections import deque
+
+class Graph:
+    def __init__(self):
+        self.graph = {}
+
+    def add_edge(self, node, neighbor):
+        if node not in self.graph:
+            self.graph[node] = []
+        self.graph[node].append(neighbor)
+    
+    def bfs(self, start_node):
+        # Mark all the vertices as not visited
+        visited = {node: False for node in self.graph}
+        # Create a queue for BFS
+        queue = deque([start_node])
+        # Mark the source node as visited and enqueue it
+        visited[start_node] = True
+
+        while queue:
+            # Dequeue a vertex from queue
+            node = queue.popleft()
+            print(node, end=" ")
+
+            # Get all adjacent vertices of the dequeued vertex node
+            # If an adjacent vertex has not been visited, then mark it visited and enqueue it
+            for neighbor in self.graph[node]:
+                if not visited[neighbor]:
+                    queue.append(neighbor)
+                    visited[neighbor] = True
+
+# Example usage
+g = Graph()
+g.add_edge(0, 1)
+g.add_edge(0, 2)
+g.add_edge(1, 2)
+g.add_edge(2, 0)
+g.add_edge(2, 3)
+g.add_edge(3, 3)
+
+print("Breadth-First Search starting from vertex 2:")
+g.bfs(2)
