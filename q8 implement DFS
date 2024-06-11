@@ -1,0 +1,37 @@
+class Graph:
+    def __init__(self):
+        self.graph = {}
+
+    def add_edge(self, node, neighbor):
+        if node not in self.graph:
+            self.graph[node] = []
+        self.graph[node].append(neighbor)
+    
+    def dfs_util(self, node, visited):
+        # Mark the current node as visited and print it
+        visited[node] = True
+        print(node, end=" ")
+
+        # Recur for all the vertices adjacent to this vertex
+        for neighbor in self.graph[node]:
+            if not visited[neighbor]:
+                self.dfs_util(neighbor, visited)
+
+    def dfs(self, start_node):
+        # Mark all the vertices as not visited
+        visited = {node: False for node in self.graph}
+        
+        # Call the recursive helper function to perform DFS
+        self.dfs_util(start_node, visited)
+
+# Example usage
+g = Graph()
+g.add_edge(0, 1)
+g.add_edge(0, 2)
+g.add_edge(1, 2)
+g.add_edge(2, 0)
+g.add_edge(2, 3)
+g.add_edge(3, 3)
+
+print("Depth-First Search starting from vertex 2:")
+g.dfs(2)
