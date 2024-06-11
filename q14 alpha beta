@@ -1,0 +1,46 @@
+def alpha_beta_pruning(node, depth, alpha, beta, maximizing_player, evaluate):
+    if depth == 0 or node.is_terminal():
+        return evaluate(node)
+
+    if maximizing_player:
+        value = float('-inf')
+        for child in node.get_children():
+            value = max(value, alpha_beta_pruning(child, depth - 1, alpha, beta, False, evaluate))
+            alpha = max(alpha, value)
+            if beta <= alpha:
+                break
+        return value
+    else:
+        value = float('inf')
+        for child in node.get_children():
+            value = min(value, alpha_beta_pruning(child, depth - 1, alpha, beta, True, evaluate))
+            beta = min(beta, value)
+            if beta <= alpha:
+                break
+        return value
+
+# Example usage:
+class Node:
+    def __init__(self, value, children=None):
+        self.value = value
+        self.children = children or []
+
+    def is_terminal(self):
+        return not self.children
+
+    def get_children(self):
+        return self.children
+
+def evaluate(node):
+    return node.value
+
+# Example tree
+root = Node(0, [
+    Node(1, [
+        Node(3), Node(4)]),
+    Node(2, [
+        Node(5), Node(6)])
+])
+
+result = alpha_beta_pruning(root, 2, float('-inf'), float('inf'), True, evaluate)
+print("Alpha-Beta Pruning Result:", result)
