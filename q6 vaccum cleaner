@@ -1,0 +1,55 @@
+import random
+
+class VacuumCleaner:
+    def __init__(self, grid_size=(2, 2)):
+        self.grid_size = grid_size
+        self.grid = [[random.choice(['clean', 'dirty']) for _ in range(grid_size[1])] for _ in range(grid_size[0])]
+        self.position = [0, 0]  # Start at the top-left corner
+    
+    def display_grid(self):
+        for row in self.grid:
+            print(row)
+        print(f"Vacuum is at position: {self.position}\n")
+    
+    def is_dirty(self):
+        x, y = self.position
+        return self.grid[x][y] == 'dirty'
+    
+    def clean(self):
+        x, y = self.position
+        self.grid[x][y] = 'clean'
+        print(f"Cleaned position: {self.position}")
+    
+    def move(self, direction):
+        x, y = self.position
+        if direction == 'up' and x > 0:
+            self.position[0] -= 1
+        elif direction == 'down' and x < self.grid_size[0] - 1:
+            self.position[0] += 1
+        elif direction == 'left' and y > 0:
+            self.position[1] -= 1
+        elif direction == 'right' and y < self.grid_size[1] - 1:
+            self.position[1] += 1
+        else:
+            print(f"Move {direction} not possible")
+    
+    def vacuum(self):
+        self.display_grid()
+        steps = 0
+        while True:
+            steps += 1
+            if self.is_dirty():
+                self.clean()
+            else:
+                move = random.choice(['up', 'down', 'left', 'right'])
+                self.move(move)
+            self.display_grid()
+            
+            # Check if all cells are clean
+            if all(cell == 'clean' for row in self.grid for cell in row):
+                print(f"All cells are clean after {steps} steps.")
+                break
+
+# Example Usage
+vacuum = VacuumCleaner()
+vacuum.vacuum()
