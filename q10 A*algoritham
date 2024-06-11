@@ -1,0 +1,81 @@
+from heapq import heappop, heappush
+
+def a_star(graph, start, goal, heuristic):
+    """
+    Implements the A* algorithm to find the shortest path from start to goal in a graph.
+
+    Parameters:
+    graph (dict): A dictionary where keys are node names and values are dictionaries
+                  of neighboring node names and their corresponding edge weights.
+    start (str): The starting node.
+    goal (str): The goal node.
+    heuristic (func): A function that takes two nodes and returns the heuristic estimate
+                      of the cost to reach the goal from the node.
+
+    Returns:
+    tuple: The total cost of the shortest path and the path itself as a list of nodes.
+    """
+    open_set = []
+    heappush(open_set, (0, start))
+    
+    came_from = {}
+    g_score = {node: float('inf') for node in graph}
+    g_score[start] = 0
+    
+    f_score = {node: float('inf') for node in graph}
+    f_score[start] = heuristic(start, goal)
+    
+    while open_set:
+        current_f, current = heappop(open_set)
+        
+        if current == goal:
+            path = []
+            while current in came_from:
+                path.append(current)
+                current = came_from[current]
+            path.append(start)
+            path.reverse()
+            return g_score[goal], path
+        
+        for neighbor, weight in graph[current].items():
+            tentative_g_score = g_score[current] + weight
+            
+            if tentative_g_score < g_score[neighbor]:
+                came_from[neighbor] = current
+                g_score[neighbor] = tentative_g_score
+                f_score[neighbor] = g_score[neighbor] + heuristic(neighbor, goal)
+                if neighbor not in [i[1] for i in open_set]:
+                    heappush(open_set, (f_score[neighbor], neighbor))
+    
+    return float('inf'), []
+
+def heuristic(node, goal):
+    """
+    Example heuristic function for A* algorithm. In this example, it is a dummy function
+    that returns 0 for all inputs. Replace this with an appropriate heuristic function
+    for your specific problem.
+
+    Parameters:
+    node (str): The current node.
+    goal (str): The goal node.
+
+    Returns:
+    float: The heuristic estimate of the cost to reach the goal from the node.
+    """
+    return 0
+
+# Example usage:
+if __name__ == "__main__":
+    graph = {
+        'A': {'B': 1, 'C': 4},
+        'B': {'A': 1, 'C': 2, 'D': 5},
+        'C': {'A': 4, 'B': 2, 'D': 1},
+        'D': {'B': 5, 'C': 1}
+    }
+    
+    start = 'A'
+    goal = 'D'
+    
+    total_cost, path = a_star(graph, start, goal, heuristic)
+    print("Total cost:", total_cost)
+    print("Path:", " -> ".join(path))
