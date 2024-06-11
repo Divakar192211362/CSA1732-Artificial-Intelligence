@@ -1,0 +1,53 @@
+from collections import deque
+
+def water_jug_problem(capacity1, capacity2, target):
+    # Initialize a queue to store the states and a set to keep track of visited states
+    queue = deque([(0, 0)])  # (jug1, jug2)
+    visited = set((0, 0))
+    
+    # Helper function to add new states to the queue
+    def add_state(state):
+        if state not in visited:
+            queue.append(state)
+            visited.add(state)
+    
+    while queue:
+        jug1, jug2 = queue.popleft()
+        
+        # Check if we have reached the target
+        if jug1 == target or jug2 == target or jug1 + jug2 == target:
+            return True
+        
+        # Fill jug1
+        add_state((capacity1, jug2))
+        
+        # Fill jug2
+        add_state((jug1, capacity2))
+        
+        # Empty jug1
+        add_state((0, jug2))
+        
+        # Empty jug2
+        add_state((jug1, 0))
+        
+        # Pour jug1 to jug2
+        new_jug1 = max(jug1 - (capacity2 - jug2), 0)
+        new_jug2 = min(jug1 + jug2, capacity2)
+        add_state((new_jug1, new_jug2))
+        
+        # Pour jug2 to jug1
+        new_jug2 = max(jug2 - (capacity1 - jug1), 0)
+        new_jug1 = min(jug1 + jug2, capacity1)
+        add_state((new_jug1, new_jug2))
+    
+    return False
+
+# Example usage:
+capacity1 = 4  # Capacity of the first jug
+capacity2 = 3  # Capacity of the second jug
+target = 2     # Target amount of water to measure
+
+if water_jug_problem(capacity1, capacity2, target):
+    print(f"It is possible to measure exactly {target} liters.")
+else:
+    print(f"It is not possible to measure exactly {target} liters.")
