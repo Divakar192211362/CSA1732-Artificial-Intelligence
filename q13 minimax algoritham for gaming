@@ -1,0 +1,129 @@
+import math
+
+# Constants for player symbols
+EMPTY = ' '
+PLAYER_X = 'X'
+PLAYER_O = 'O'
+
+def evaluate(board):
+    """
+    Evaluates the current state of the board.
+    Returns +1 if PLAYER_X wins, -1 if PLAYER_O wins, and 0 if it's a draw or game not yet over.
+    """
+    # Check rows
+    for row in board:
+        if all(cell == PLAYER_X for cell in row):
+            return 1
+        elif all(cell == PLAYER_O for cell in row):
+            return -1
+
+    # Check columns
+    for col in range(3):
+        if all(board[row][col] == PLAYER_X for row in range(3)):
+            return 1
+        elif all(board[row][col] == PLAYER_O for row in range(3)):
+            return -1
+
+    # Check diagonals
+    if all(board[i][i] == PLAYER_X for i in range(3)) or all(board[i][2-i] == PLAYER_X for i in range(3)):
+        return 1
+    elif all(board[i][i] == PLAYER_O for i in range(3)) or all(board[i][2-i] == PLAYER_O for i in range(3)):
+        return -1
+
+    # Check for draw
+    if all(cell != EMPTY for row in board for cell in row):
+        return 0
+
+    # Game is not yet over
+    return None
+
+def minimax(board, depth, maximizing_player):
+    """
+    Minimax algorithm implementation.
+    Returns the best score for the current player given the current board state.
+    """
+    result = evaluate(board)
+    if result is not None:
+        return result
+
+    if maximizing_player:
+        max_eval = float('-inf')
+        for row in range(3):
+            for col in range(3):
+                if board[row][col] == EMPTY:
+                    board[row][col] = PLAYER_X
+                    eval = minimax(board, depth+1, False)
+                    board[row][col] = EMPTY
+                    max_eval = max(max_eval, eval)
+        return max_eval
+    else:
+        min_eval = float('inf')
+        for row in range(3):
+            for col in range(3):
+                if board[row][col] == EMPTY:
+                    board[row][col] = PLAYER_O
+                    eval = minimax(board, depth+1, True)
+                    board[row][col] = EMPTY
+                    min_eval = min(min_eval, eval)
+        return min_eval
+
+def find_best_move(board):
+    """
+    Finds the best move for the current player using the Minimax algorithm.
+    Returns the row and column indices of the best move.
+    """
+    best_eval = float('-inf')
+    best_move = None
+    for row in range(3):
+        for col in range(3):
+            if board[row][col] == EMPTY:
+                board[row][col] = PLAYER_X
+                eval = minimax(board, 0, False)
+                board[row][col] = EMPTY
+                if eval > best_eval:
+                    best_eval = eval
+                    best_move = (row, col)
+    return best_move
+
+# Example usage:
+if __name__ == "__main__":
+    board = [
+        [EMPTY, EMPTY, EMPTY],
+        [EMPTY, EMPTY, EMPTY],
+        [EMPTY, EMPTY, EMPTY]
+    ]
+
+    print("Initial Board:")
+    for row in board:
+        print(row)
+
+    while True:
+        x, y = map(int, input("Enter row and column (0-2) for X's move: ").split())
+        board[x][y] = PLAYER_X
+
+        result = evaluate(board)
+        if result == 1:
+            print("X wins!")
+            break
+        elif result == 0:
+            print("It's a draw!")
+            break
+
+        print("Board after X's move:")
+        for row in board:
+            print(row)
+
+        best_move = find_best_move(board)
+        board[best_move[0]][best_move[1]] = PLAYER_O
+
+        print("Board after O's move:")
+        for row in board:
+            print(row)
+
+        result = evaluate(board)
+        if result == -1:
+            print("O wins!")
+            break
+        elif result == 0:
+            print("It's a draw!")
+            break
