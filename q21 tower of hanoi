@@ -1,0 +1,15 @@
+% Base case: no disks to move
+move(0, _, _, _) :-
+    !.
+
+% Recursive case
+move(N, From, To, Aux) :-
+    N > 0,
+    M is N - 1,
+    move(M, From, Aux, To), % Move M disks from From to Aux using To as auxiliary
+    format('Move disk from ~w to ~w~n', [From, To]), % Move the Nth disk from From to To
+    move(M, Aux, To, From). % Move M disks from Aux to To using From as auxiliary
+
+% Helper predicate to start the process
+hanoi(N) :-
+    move(N, left, right, center).
