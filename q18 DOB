@@ -1,0 +1,23 @@
+% Define the database of people with their names and dates of birth
+person(john_doe, date(1990, 5, 15)).
+person(jane_smith, date(1985, 10, 20)).
+person(alice_jones, date(1995, 3, 30)).
+person(bob_brown, date(1988, 7, 12)).
+
+% Retrieve the date of birth for a given name
+dob(Name, date(Year, Month, Day)) :-
+    person(Name, date(Year, Month, Day)).
+
+% Retrieve the names of all people born in a specific year
+born_in_year(Year, Name) :-
+    person(Name, date(Year, _, _)).
+
+% Retrieve the names of all people born before a specific year
+born_before_year(Year, Name) :-
+    person(Name, date(Y, _, _)),
+    Y < Year.
+
+% Retrieve the names of all people born after a specific year
+born_after_year(Year, Name) :-
+    person(Name, date(Y, _, _)),
+    Y > Year.
