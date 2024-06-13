@@ -1,0 +1,113 @@
+% Facts
+% Define family relationships
+parent(john, mary).
+parent(john, mike).
+parent(susan, mary).
+parent(susan, mike).
+parent(mary, lily).
+parent(mary, james).
+parent(peter, lily).
+parent(peter, james).
+
+% Define gender
+male(john).
+male(mike).
+male(james).
+male(peter).
+
+female(susan).
+female(mary).
+female(lily).
+
+% Rules
+father(F, C) :-
+    parent(F, C),
+    male(F).
+
+mother(M, C) :-
+    parent(M, C),
+    female(M).
+
+sibling(A, B) :-
+    parent(P, A),
+    parent(P, B),
+    A \= B.
+
+brother(B, S) :-
+    sibling(B, S),
+    male(B).
+
+sister(S, B) :-
+    sibling(S, B),
+    female(S).
+
+grandparent(GP, GC) :-
+    parent(GP, P),
+    parent(P, GC).
+
+grandfather(GF, GC) :-
+    grandparent(GF, GC),
+    male(GF).
+
+grandmother(GM, GC) :-
+    grandparent(GM, GC),
+    female(GM).
+
+% Additional relationships
+uncle(U, N) :-
+    brother(U, P),
+    parent(P, N).
+
+aunt(A, N) :-
+    sister(A, P),
+    parent(P, N).
+
+cousin(C1, C2) :-
+    parent(P1, C1),
+    parent(P2, C2),
+    sibling(P1, P2).
+
+% Query predicates to test relationships
+is_father(F, C) :-
+    father(F, C),
+    format('~w is the father of ~w.~n', [F, C]).
+
+is_mother(M, C) :-
+    mother(M, C),
+    format('~w is the mother of ~w.~n', [M, C]).
+
+is_sibling(A, B) :-
+    sibling(A, B),
+    format('~w and ~w are siblings.~n', [A, B]).
+
+is_brother(B, S) :-
+    brother(B, S),
+    format('~w is the brother of ~w.~n', [B, S]).
+
+is_sister(S, B) :-
+    sister(S, B),
+    format('~w is the sister of ~w.~n', [S, B]).
+
+is_grandparent(GP, GC) :-
+    grandparent(GP, GC),
+    format('~w is the grandparent of ~w.~n', [GP, GC]).
+
+is_grandfather(GF, GC) :-
+    grandfather(GF, GC),
+    format('~w is the grandfather of ~w.~n', [GF, GC]).
+
+is_grandmother(GM, GC) :-
+    grandmother(GM, GC),
+    format('~w is the grandmother of ~w.~n', [GM, GC]).
+
+is_uncle(U, N) :-
+    uncle(U, N),
+    format('~w is the uncle of ~w.~n', [U, N]).
+
+is_aunt(A, N) :-
+    aunt(A, N),
+    format('~w is the aunt of ~w.~n', [A, N]).
+
+is_cousin(C1, C2) :-
+    cousin(C1, C2),
+    format('~w and ~w are cousins.~n', [C1, C2]).
