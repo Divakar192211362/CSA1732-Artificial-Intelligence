@@ -1,0 +1,21 @@
+% Facts about foods and their categories
+food_type(apple, fruit).
+food_type(banana, fruit).
+food_type(broccoli, vegetable).
+food_type(carrot, vegetable).
+food_type(chicken_breast, protein).
+food_type(fish, protein).
+food_type(brown_rice, carbohydrate).
+food_type(oatmeal, carbohydrate).
+food_type(almonds, fat).
+
+% Foods suitable for a diabetic diet
+suitable_for_diabetes(apple).
+suitable_for_diabetes(broccoli).
+suitable_for_diabetes(carrot).
+suitable_for_diabetes(chicken_breast).
+suitable_for_diabetes(fish).
+
+% Rules for suggesting diet based on disease
+suggest_diet(diabetes, Diet) :-
+    findall(Food, (suitable_for_diabetes(Food), food_type(Food, _)), Diet).
